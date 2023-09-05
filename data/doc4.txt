@@ -1,0 +1,51 @@
+
+How does suspend/resume work for ML Workspaces?
+Answer: Suspend/resume is currently tech preview (TP) on AWS and Azure. Both UI commands and CDP CLI commands are available.  To get access to this feature, customer needs to have an entitlement (see ML_SUSPENDABLE). Instructions on how to do suspend and resume are pretty basic. Reference DSE-21659. 
+
+Recording of a demo [passcode: 6c=h7gG. ] Resume and suspend operations take approximately 15 minutes each. 
+
+When workspace is suspended, it will no longer be accessible to anyone and there will be no compute instances used for it (no CPU workers, no GPU workers), nor CML Infra nodes. However, the Lifty Platform node will continue to be up and running (no Cloudera charge for that). The volumes that EC2 instances were using will become detached (caution if customer has automatic GC scripts for this). This is real $$ savings for the customer not only from Cloudera perspective, but also from cloud provider compute savings. 
+What’s the latest roadmap? When is X feature coming?
+Answer: PM updates roadmap for Public Cloud every month or two. Please check there first. If you don’t see what you need, ask in #sme_ml and tag Peter Ableda.
+
+What are the different ML roles assigned to users?
+Answer: Start by reading User Roles doc. The environment roles (MLAdmin, MLUser, MLBusinessUser) work at the scope of environment. For example, MLUser would have access to all workspaces in a given environment. Workspace resource roles apply only at a single ML Workspace scope. 
+MLAdmin role is needed to view Grafana dashboard. 
+
+How to integrate VS Code with CML?
+Answer: You will need to download and configure cdswctl CLI first. Then, if you are not SSO user, supply an SSH key. If you are SSO, then you don’t need to do that. Finally, use the Legacy API key when logging in with cdswctl. For more see “Using VS Code with CML/CDSW”. We also have public docs on this.
+How do GPUs help with CML? 
+Answer: With GPUs you can get ~90% performance improvement in some cases, when using GPU in CML. Tensorflow is another framework that you can leverage on CML with GPUs. However, we do not support Spark workloads for CML. You can find some more context from this slack discussion. One note is that scaling up GPU from 0 to 1 instances can take up to 10 minutes all in itself. For Private Cloud perspective see here.
+
+Can CML be upgraded in-place?
+Answer: There is no “CML upgrade” at large, but rather each ML Workspace within CML data services can be upgraded. There are two types of upgrades available, including in-place upgrades. Always backup your ML Workspace before an upgrade.
+
+Is Iceberg supported? How do we use it with MLOps?
+Answer: Christina Sanchez has a great demo for using MLOps and Iceberg. You can watch the recording (passcode: %s7QiQff ) from a SME session where this was presented.
+
+Can a customer build a runtime from scratch? 
+Answer: Yes, in fact our PBJ runtimes is open source now. This means that a customer can build their own special runtime that starts with a ubuntu (RHEL may be possible, but could be significant effort on customer side, we don’t recommend it) image and they can package any version of various libraries that they need for their project. There is no Cloudera proprietary code in these runtime images. Note that custom PBJ runtimes do not support editors other than Cloudera workbench at this time.
+
+How to access private github repos to create projects?
+Answer: You will need to get a personal access token from Github and follow the procedure described in Cloudera community article How to import private repositories Github, gitlab. Once you use the token approach you can also easily git push to the remote repository from CML, without any additional setup required.
+
+Using R, how to connect to DataLake and CDW resources from CML?
+Answer: See Cloudera Community Article titled Connection CML to Data Lake and CDW with R article that gives the detailed step-by-step. If you need to write to a Hive external table, check out this community article. Finally, there is a github repo with some examples as well
+
+Another article on reading/writing to external tables with R without Hive Warehouse Connector.
+
+Using R, how to deploy a model in CML? 
+Answer: See Cloudera Community article titled Deploying R Models in CML.
+
+What are some demos we can do with R as the main language? 
+Answer: We have an older repo that should work with CML: https://github.com/fastforwardlabs/cml_sentiment_analysis. Also can show customers that RStudio editor will work with CML (as a 3rd party editor) via this Rstudio ML community runtime 
+Why do I see other user’s projects when I select “My Projects”?
+Answer: Simple answer is all Public projects are viewable by everyone so those get put under My Projects (regardless of which user created it). If you want to see just the projects you created, use the Creator filter. Also note that MLAdmin role users are able to see all projects, regardless of whether you are a Collaborator or not. 
+
+How do Custom Data Connections work? 
+Answer: Custom Data Connection open up standard way for CML users to connect to data sources outside of CDP (e.g. Snowflake, external DBs, etc.). This was possible in the past too, but relied on each user implementing their own access pattern. With Custom Data Connections, things can be standardized across the workspace. 
+First, as ML Workspace admin, you’ll need to create a new project and inside that project create a directory (call it anything you want). Second, within that directory you’ll implement a class that inherits from  CustomConnection from cml.data_v1. Note there are parameters that are passed to the constructor to build the connection (e.g. host, port, credentials). There is a working example of the code in this internal github. Now, you have the basic setup to add a custom connection, but you still need to add it to the ML Workspace to be usable. Go to Site Admin -> Data Connections and click Add New. Fill in the pop-up form, including adding any variables your class expects (e.g. host, port). Once you add the connection at the workspace level, it will be available in every new project, and can be used in existing projects if the project syncs Data Connections from the workspace. 
+
+Custom Data Connections get loaded into the session at runtime. If you have a customer who uses custom runtime images (own docker images), they do not need to install anything additional in the image. 
+
+Note: if you change any of the code in your Custom Data Connection, you need to delete the connection in the UI and create it again for your changes to be reflected. 
