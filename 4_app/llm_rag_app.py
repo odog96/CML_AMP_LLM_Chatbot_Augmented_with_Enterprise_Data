@@ -91,17 +91,17 @@ def create_enhanced_prompt(context, question):
     return prompt
   
 # Pass through user input to LLM model with enhanced prompt and stop tokens
-def get_llm_response(prompt):
+def get_llm_response(prompt, max_new_tokens=256, do_sample=False, temperature=0.7, top_p=0.85, top_k=70, repetition_penalty=1.07):
     stop_words = ['<human>:', '\n<bot>:']
 
     generated_text = model_llm.get_llm_generation(prompt,
                                                   stop_words,
-                                                  max_new_tokens=256,
-                                                  do_sample=False,
-                                                  temperature=0.7,
-                                                  top_p=0.85,
-                                                  top_k=70,
-                                                  repetition_penalty=1.07)
+                                                  max_new_tokens=max_new_tokens,
+                                                  do_sample=do_sample,
+                                                  temperature=temperature,
+                                                  top_p=top_p,
+                                                  top_k=top_k,
+                                                  repetition_penalty=repetition_penalty)
     return generated_text  
 
 if __name__ == "__main__":
