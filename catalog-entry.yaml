@@ -13,5 +13,5 @@ entries:
       - Generative AI
       - RAG
       - NLP
-    git_url: 'https://github.com/cloudera/CML_AMP_LLM_Chatbot_Augmented_with_Enterprise_Data.git'
+    git_url: 'https://github.com/odog96/CML_AMP_LLM_Chatbot_Augmented_with_Enterprise_Data.git'
     is_prototype: true
