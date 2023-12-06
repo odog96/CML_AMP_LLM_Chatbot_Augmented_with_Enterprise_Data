@@ -7,7 +7,7 @@ entries:
         
         long_description: CML - LLM - pdf reader + LLM BYOM
     image_path: >-
-      https://raw.githubusercontent.com/kevinbtalbert/CML_AMP_CPU-ONLY-MISTRAL7B-CHATBOT/master/assets/catalog-entry.png
+      https://raw.githubusercontent.com//odog96/CML_AMP_LLM_Chatbot_Augmented_with_Enterprise_Data/blob/main/llm_amp.jpeg
     tags:
       - Chatbot
       - LLM
