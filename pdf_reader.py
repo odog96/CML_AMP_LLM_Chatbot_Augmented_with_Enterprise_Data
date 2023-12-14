@@ -55,6 +55,7 @@ def chunk_file_and_save(filename, doc_number):
         chunk = ' '.join(word_list[start_idx:end_idx])
         with open(os.path.join(output_folder_data, f'doc_{doc_number}.txt'), 'w') as output_file:
             output_file.write(chunk)
+            print('writing',outputfile)
 
         start_idx = end_idx
         doc_number += 1
